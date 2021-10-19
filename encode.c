@@ -86,15 +86,30 @@ MAP* get_encoding_map(char* string) {
 	return encoding_map;
 }
 
-// TODO: vvv IMPLEMENT vvv
+char* encode_with_map(MAP* encoding_map, char* string) {
 
-char* encode_with_map(MAP* map, char* string) {
+	char* encoded_string = malloc(10 * sizeof(char));
+
 	// first encode the map into the string
+	for (int i = 0; i < encoding_map->bucket_count; ++i) {
+		for (LIST_NODE* curr = encoding_map->buckets[i]->head; curr != NULL; curr = curr->next) {
+			append_to_string(encoded_string, curr->key);
+			append_to_string(encoded_string, "=");
+			append_to_string(encoded_string, curr->value);
+			append_to_string(encoded_string, ",");
+		}
+	}
+
 	// for each character of the original string
 	// get its encoding and write it to another string
+	for (int i = 0, length = strlen(string); i < length; ++i)
+		append_to_string(encoded_string, get(encoding_map, string[i]));
+
 	// return the encoded string
-	return NULL;
+	return encoded_string;
 }
+
+// TODO: vvv IMPLEMENT vvv
 
 // get_encoding_map
 
@@ -117,5 +132,9 @@ MAP* get_map_from_tree(TREE_NODE* hufhuf_tree) {
 	// if (node.val != NULL) map.put(val, path)
 	// backtrack a bit
 	return NULL;
+}
+
+void append_to_string(char* original, char* to_append) {
+	printf("appending to '%s': '%s'", original, to_append);
 }
 

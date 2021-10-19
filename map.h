@@ -1,7 +1,10 @@
+struct LIST;
+struct LIST_NODE;
 
 typedef struct {
 
-	int dummy;
+	int bucket_count;
+	LIST** buckets;
 
 } MAP;
 
@@ -20,7 +23,7 @@ typedef struct {
 
 typedef struct {
 
-	int dummy;
+	LIST_NODE* head;
 
 } LIST;
 
@@ -32,7 +35,8 @@ char* get(LIST* list, char* key);
 
 typedef struct {
 
-	int dummy;
+	LIST_NODE* next;
+	char* key, value;
 
 } LIST_NODE;
 
