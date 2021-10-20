@@ -1,4 +1,4 @@
-#include <cstdio>
+#include <stdio.h>
 
 #include "map.h"
 #include "tree.h"
@@ -75,7 +75,7 @@ void write_encoded(FILE* fp, char* encoded_string) {
 	printf("writing encoded string '%s' to file '%s'", encoded_string, fp);
 
 	// write encoded string
-	fwrite(fp, encoded_string);
+	fputs(encoded_string, fp);
 
 	return;
 }
@@ -165,7 +165,7 @@ TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 			node->value = curr->key;
 			node->frequency = curr->value;
 
-			add(heap, node);
+			add_node(heap, node);
 		}
 	}
 
@@ -175,7 +175,7 @@ TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 		n2 = remove_min(heap);
 		newnode = make_node(n1, n2);
 
-		add(heap, newnode);
+		add_node(heap, newnode);
 	}
 
 	TREE_NODE* hufhuf_tree = remove_min(heap);

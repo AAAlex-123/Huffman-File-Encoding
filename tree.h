@@ -1,5 +1,4 @@
 #include "map.h"
-#include <cstddef>
 
 struct TREE_NODE;
 
@@ -36,7 +35,7 @@ typedef struct {
 } MIN_HEAP;
 
 // add and keep heap properties
-void add(MIN_HEAP* heap, TREE_NODE* value);
+void add_node(MIN_HEAP* heap, TREE_NODE* value);
 
 // remove min and keep heap properties
 TREE_NODE* remove_min(MIN_HEAP* heap);
