@@ -156,7 +156,7 @@ MAP* get_frequency_map(char* string) {
 TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 	printf("making hufhuf tree\n");
 
-	MIN_HEAP* heap = malloc(sizeof(MIN_HEAP));
+	MIN_HEAP* heap = make_heap(5);
 
 	// algorithm lol
 	for (int i = 0; i < freq_map->bucket_count; ++i) {
@@ -173,7 +173,7 @@ TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 		TREE_NODE *n1, *n2, *newnode;
 		n1 = remove_min(heap);
 		n2 = remove_min(heap);
-		newnode = make_node(n1, n2);
+		newnode = combine_nodes(n1, n2);
 
 		add_node(heap, newnode);
 	}

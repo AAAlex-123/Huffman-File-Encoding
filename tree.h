@@ -1,38 +1,26 @@
 #include "map.h"
 
-struct TREE_NODE;
-
 typedef struct {
 
 	int depth;
-	TREE_NODE* left, right;
+	struct TREE_NODE* left, *right;
 
 	char* value;
 	int frequency;
 
 } TREE_NODE;
 
-TREE_NODE* make_node(TREE_NODE* n1, TREE_NODE* n2) {
-
-	TREE_NODE* newnode = malloc(sizeof(TREE_NODE));
-
-	newnode->depth = n1->depth;
-	newnode->left = n1;
-	newnode->right = n2;
-	newnode->value = NULL;
-	newnode->frequency = n1->frequency + n2->frequency;
-
-	n1->depth += 1;
-	n2->depth += 1;
-
-	return newnode;
-}
+TREE_NODE* combine_nodes(TREE_NODE* n1, TREE_NODE* n2);
 
 typedef struct {
 
-	int size;
+	int size, max_capacity;
+	TREE_NODE* nodes;
 
 } MIN_HEAP;
+
+// initialise nodes array
+MIN_HEAP* make_heap(int capacity);
 
 // add and keep heap properties
 void add_node(MIN_HEAP* heap, TREE_NODE* value);
