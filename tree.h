@@ -1,12 +1,16 @@
 #include "map.h"
 
+struct TREE_NODE;
+
 typedef struct {
 
-	int dummy;
+	int depth;
+	TREE_NODE* left, right;
+
+	char* value;
+	int frequency;
 
 } TREE_NODE;
-
-char* get_recursive(TREE_NODE* tree_node, char* key);
 
 typedef struct {
 
