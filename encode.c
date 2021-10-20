@@ -153,16 +153,38 @@ MAP* get_frequency_map(char* string) {
 	return frequency_map;
 }
 
-// TODO: vvv IMPLEMENT vvv
-
 TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 	printf("making hufhuf tree\n");
 
-	// algorithm lol
-	return NULL;
-}
+	MIN_HEAP* heap = malloc(sizeof(MIN_HEAP));
 
-// TODO: ^^^ IMPLEMENT ^^^
+	// algorithm lol
+	for (int i = 0; i < freq_map->bucket_count; ++i) {
+		for (LIST_NODE* curr = freq_map->buckets[i]->head; curr != NULL; curr = curr->next) {
+			TREE_NODE* node = malloc(sizeof(TREE_NODE));
+			node->value = curr->key;
+			node->frequency = curr->value;
+
+			add(heap, node);
+		}
+	}
+
+	while (heap->size > 1) {
+		TREE_NODE *n1, *n2, *newnode;
+		n1 = remove_min(heap);
+		n2 = remove_min(heap);
+		newnode = make_node(n1, n2);
+
+		add(heap, newnode);
+	}
+
+	TREE_NODE* hufhuf_tree = remove_min(heap);
+
+	// cleanup
+	free(heap);
+
+	return hufhuf_tree;
+}
 
 MAP* get_map_from_tree(TREE_NODE* hufhuf_tree) {
 	printf("getting map from tree\n");
@@ -172,6 +194,9 @@ MAP* get_map_from_tree(TREE_NODE* hufhuf_tree) {
 	int current_depth = 0;
 
 	dfs(hufhuf_tree, encoding_map, path, current_depth);
+
+	// cleanup
+	free(path);
 
 	return encoding_map;
 }
@@ -186,8 +211,6 @@ char* append_to_string(char* original, char* to_append) {
 	memcpy(combined, original, old_length);
 	memcpy(combined + old_length, to_append, new_length);
 
-	free(original);
-	free(to_append);
 	return combined;
 }
 
@@ -215,7 +238,7 @@ void dfs(TREE_NODE* hufhuf_tree, MAP* map, char* path, int depth) {
 		// get value from path
 		char* path_to_char = malloc(strlen(path) * sizeof(char));
 		memcpy(path_to_char, path, strlen(path));
-
+		
 		// add encoding to map
 		put(map, new_char, path_to_char);
 	}
