@@ -180,9 +180,6 @@ TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 
 	TREE_NODE* hufhuf_tree = remove_min(heap);
 
-	// cleanup
-	free(heap);
-
 	return hufhuf_tree;
 }
 
