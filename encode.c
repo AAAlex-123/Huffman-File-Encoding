@@ -128,7 +128,7 @@ char* encode_with_map(MAP* encoding_map, char* string) {
 MAP* get_frequency_map(char* string) {
 	printf("making frequency map from '%s'\n", string);
 
-	MAP* frequency_map = malloc(sizeof(MAP));
+	MAP* frequency_map = create_map(15);
 
 	// for each character of the original string
 	for (int i = 0, length = strlen(string); i < length; ++i) {
@@ -189,7 +189,7 @@ TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 MAP* get_map_from_tree(TREE_NODE* hufhuf_tree) {
 	printf("getting map from tree\n");
 
-	MAP* encoding_map = malloc(sizeof(MAP));
+	MAP* encoding_map = create_map(15);
 	char* path = malloc(hufhuf_tree->depth * sizeof(char));
 	int current_depth = 0;
 
