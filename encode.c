@@ -8,13 +8,13 @@ char* encode(char* original_string);
 void write_encoded(FILE* fp, char* encoded_string);
 
 // encode(char*):
-MAP* get_encoding_map(char* string);
-char* encode_with_map(MAP* map, char* string);
+struct MAP* get_encoding_map(char* string);
+char* encode_with_map(struct MAP* map, char* string);
 
 // get_encoding_map(char*):
-MAP* get_frequency_map(char* string);
-TREE_NODE* make_hufhuf_tree(MAP* map);
-MAP* get_map_from_tree(TREE_NODE* hufhuf_tree);
+struct MAP* get_frequency_map(char* string);
+struct TREE_NODE* make_hufhuf_tree(struct MAP* map);
+struct MAP* get_map_from_tree(struct TREE_NODE* hufhuf_tree);
 
 int main(int argc, char** argv) {
 	printf("main with %d args:\n", argc);
@@ -60,8 +60,8 @@ char* read_file(FILE* fp) {
 char* encode(char* original_string) {
 	printf("encoding string '%s'\n", original_string);
 
-	// get encoding map: char* orig_str -> MAP* encoding map
-	MAP* encoding_map = get_encoding_map(original_string);
+	// get encoding map: char* orig_str -> struct MAP* encoding map
+	struct MAP* encoding_map = get_encoding_map(original_string);
 
 	// encode with map: char* orig_str -> char* encoded str
 	//  - the encoding entails writing the map to the string
@@ -82,30 +82,30 @@ void write_encoded(FILE* fp, char* encoded_string) {
 
 // encode
 
-MAP* get_encoding_map(char* string) {
+struct MAP* get_encoding_map(char* string) {
 	printf("creating encoding map from string '%s'\n", string);
 
-	// get frequency map of each character: char* str -> MAP* freq map
-	MAP* frequency_map = get_frequency_map(string);
+	// get frequency map of each character: char* str -> struct MAP* freq map
+	struct MAP* frequency_map = get_frequency_map(string);
 
-	// make tree with huffman stuff: MAP* freq map -> TREE* hufhuf tree
-	TREE_NODE* tree = make_hufhuf_tree(frequency_map);
+	// make tree with huffman stuff: struct MAP* freq map -> TREE* hufhuf tree
+	struct TREE_NODE* tree = make_hufhuf_tree(frequency_map);
 
-	// traverse tree to get each character's encoding: TREE* hufhuf tree -> MAP* encoding map
-	MAP* encoding_map = get_map_from_tree(tree);
+	// traverse tree to get each character's encoding: TREE* hufhuf tree -> struct MAP* encoding map
+	struct MAP* encoding_map = get_map_from_tree(tree);
 
 	// return map
 	return encoding_map;
 }
 
-char* encode_with_map(MAP* encoding_map, char* string) {
+char* encode_with_map(struct MAP* encoding_map, char* string) {
 	prtinf("encoding string '%s' with map\n", string);
 
 	char* encoded_string = malloc(10 * sizeof(char));
 
 	// first encode the map into the string
 	for (int i = 0; i < encoding_map->bucket_count; ++i) {
-		for (LIST_NODE* curr = encoding_map->buckets[i]->head; curr != NULL; curr = curr->next) {
+		for (struct LIST_NODE* curr = encoding_map->buckets[i]->head; curr != NULL; curr = curr->next) {
 			encoded_string = append_to_string(encoded_string, curr->key);
 			encoded_string = append_to_string(encoded_string, "=");
 			encoded_string = append_to_string(encoded_string, curr->value);
@@ -125,10 +125,10 @@ char* encode_with_map(MAP* encoding_map, char* string) {
 
 // get_encoding_map
 
-MAP* get_frequency_map(char* string) {
+struct MAP* get_frequency_map(char* string) {
 	printf("making frequency map from '%s'\n", string);
 
-	MAP* frequency_map = create_map(15);
+	struct MAP* frequency_map = create_map(15);
 
 	// for each character of the original string
 	for (int i = 0, length = strlen(string); i < length; ++i) {
@@ -153,15 +153,15 @@ MAP* get_frequency_map(char* string) {
 	return frequency_map;
 }
 
-TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
+struct TREE_NODE* make_hufhuf_tree(struct MAP* freq_map) {
 	printf("making hufhuf tree\n");
 
-	MIN_HEAP* heap = make_heap(5);
+	struct MIN_HEAP* heap = make_heap(5);
 
 	// algorithm lol
 	for (int i = 0; i < freq_map->bucket_count; ++i) {
-		for (LIST_NODE* curr = freq_map->buckets[i]->head; curr != NULL; curr = curr->next) {
-			TREE_NODE* node = malloc(sizeof(TREE_NODE));
+		for (struct LIST_NODE* curr = freq_map->buckets[i]->head; curr != NULL; curr = curr->next) {
+			struct TREE_NODE* node = malloc(sizeof(struct TREE_NODE));
 			node->value = curr->key;
 			node->frequency = curr->value;
 
@@ -170,7 +170,7 @@ TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 	}
 
 	while (heap->size > 1) {
-		TREE_NODE *n1, *n2, *newnode;
+		struct TREE_NODE *n1, *n2, *newnode;
 		n1 = remove_min(heap);
 		n2 = remove_min(heap);
 		newnode = combine_nodes(n1, n2);
@@ -178,15 +178,15 @@ TREE_NODE* make_hufhuf_tree(MAP* freq_map) {
 		add_node(heap, newnode);
 	}
 
-	TREE_NODE* hufhuf_tree = remove_min(heap);
+	struct TREE_NODE* hufhuf_tree = remove_min(heap);
 
 	return hufhuf_tree;
 }
 
-MAP* get_map_from_tree(TREE_NODE* hufhuf_tree) {
+struct MAP* get_map_from_tree(struct TREE_NODE* hufhuf_tree) {
 	printf("getting map from tree\n");
 
-	MAP* encoding_map = create_map(15);
+	struct MAP* encoding_map = create_map(15);
 	char* path = malloc(hufhuf_tree->depth * sizeof(char));
 	int current_depth = 0;
 
@@ -211,7 +211,7 @@ char* append_to_string(char* original, char* to_append) {
 	return combined;
 }
 
-void dfs(TREE_NODE* hufhuf_tree, MAP* map, char* path, int depth) {
+void dfs(struct TREE_NODE* hufhuf_tree, struct MAP* map, char* path, int depth) {
 	printf("exploring: '%s', at depth %d\n", path, depth);
 
 	// if leaf not found

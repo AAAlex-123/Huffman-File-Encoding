@@ -1,30 +1,28 @@
 #include "map.h"
 
-typedef struct {
+struct TREE_NODE {
 
 	int depth;
 	struct TREE_NODE* left, *right;
 
 	char* value;
 	int frequency;
+};
 
-} TREE_NODE;
+struct TREE_NODE* combine_nodes(struct TREE_NODE* n1, struct TREE_NODE* n2);
 
-TREE_NODE* combine_nodes(TREE_NODE* n1, TREE_NODE* n2);
-
-typedef struct {
+struct MIN_HEAP {
 
 	int size, max_capacity;
-	TREE_NODE* nodes;
-
-} MIN_HEAP;
+	struct TREE_NODE* nodes;
+};
 
 // initialise nodes array
-MIN_HEAP* make_heap(int capacity);
+struct MIN_HEAP* make_heap(int capacity);
 
 // add and keep heap properties
-void add_node(MIN_HEAP* heap, TREE_NODE* value);
+void add_node(struct MIN_HEAP* heap, struct TREE_NODE* value);
 
 // remove min and keep heap properties
-TREE_NODE* remove_min(MIN_HEAP* heap);
+struct TREE_NODE* remove_min(struct MIN_HEAP* heap);
 

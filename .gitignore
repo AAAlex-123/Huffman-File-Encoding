@@ -1,7 +1,0 @@
-
-# ignore vs files
-.vs/
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*vcxproj.user
